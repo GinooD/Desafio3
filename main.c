@@ -142,19 +142,68 @@ void ordenarPorDiasBurbuja(int numeros[], int dias[], int cantidad) {
     printf("[OK] Entradas ordenadas por dias de vencimiento (burbuja).\n");
 }
 
+/* Ordenamiento por burbuja segun numero de entrada (para busqueda binaria) */
+void ordenarPorNumeroBurbuja(int numeros[], int dias[], int cantidad) {
+    int i, j;
+
+    for (i = 0; i < cantidad - 1; i++) {
+        for (j = 0; j < cantidad - 1 - i; j++) {
+            if (numeros[j] > numeros[j + 1]) {
+                intercambiar(&numeros[j], &numeros[j + 1]);
+                intercambiar(&dias[j], &dias[j + 1]);
+            }
+        }
+    }
+}
+
+/* Busqueda secuencial: revisa una por una desde el principio */
+int busquedaSecuencial(int numeros[], int cantidad, int buscado) {
+    int i;
+    for (i = 0; i < cantidad; i++) {
+        if (numeros[i] == buscado) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/* Busqueda binaria: ordena por numero y busca partiendo a la mitad */
+int busquedaBinaria(int numeros[], int dias[], int cantidad, int buscado) {
+    int izq = 0;
+    int der = cantidad - 1;
+    int medio;
+
+    ordenarPorNumeroBurbuja(numeros, dias, cantidad);
+
+    while (izq <= der) {
+        medio = (izq + der) / 2;
+        if (numeros[medio] == buscado) {
+            return medio;
+        } else if (numeros[medio] < buscado) {
+            izq = medio + 1;
+        } else {
+            der = medio - 1;
+        }
+    }
+
+    return -1;
+}
+
 int main(void) {
     int numeros[MAX];
     int dias[MAX];
     int cantidad = 0;
-    int opcion;
+    int opcion, buscado, pos;
 
     do {
-        printf("\n=== GESTION DE ENTRADAS (PASO 2) ===\n");
+        printf("\n=== GESTION DE ENTRADAS (PASO 3) ===\n");
         printf("1. Agregar entrada\n");
         printf("2. Actualizar entrada\n");
         printf("3. Eliminar entrada\n");
         printf("4. Mostrar entradas\n");
         printf("5. Ordenar por dias de vencimiento (Burbuja)\n");
+        printf("6. Buscar entrada (Secuencial)\n");
+        printf("7. Buscar entrada (Binaria)\n");
         printf("0. Salir\n");
         printf("Opcion: ");
         scanf("%d", &opcion);
@@ -174,6 +223,34 @@ int main(void) {
                 break;
             case 5:
                 ordenarPorDiasBurbuja(numeros, dias, cantidad);
+                break;
+            case 6:
+                if (cantidad == 0) {
+                    printf("\n[AVISO] No hay entradas para buscar.\n");
+                } else {
+                    printf("\nIngrese el numero de entrada a buscar (secuencial): ");
+                    scanf("%d", &buscado);
+                    pos = busquedaSecuencial(numeros, cantidad, buscado);
+                    if (pos != -1) {
+                        printf("[ENCONTRADA] Entrada #%d | Dias: %d\n", numeros[pos], dias[pos]);
+                    } else {
+                        printf("[NO ENCONTRADA] No existe la entrada #%d.\n", buscado);
+                    }
+                }
+                break;
+            case 7:
+                if (cantidad == 0) {
+                    printf("\n[AVISO] No hay entradas para buscar.\n");
+                } else {
+                    printf("\nIngrese el numero de entrada a buscar (binaria): ");
+                    scanf("%d", &buscado);
+                    pos = busquedaBinaria(numeros, dias, cantidad, buscado);
+                    if (pos != -1) {
+                        printf("[ENCONTRADA] Entrada #%d | Dias: %d\n", numeros[pos], dias[pos]);
+                    } else {
+                        printf("[NO ENCONTRADA] No existe la entrada #%d.\n", buscado);
+                    }
+                }
                 break;
             case 0:
                 printf("\nSaliendo...\n");
