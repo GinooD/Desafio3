@@ -121,6 +121,27 @@ void eliminarEntrada(int numeros[], int dias[], int *pCant) {
     printf("[OK] Entrada #%d eliminada.\n", buscado);
 }
 
+/* Ordenamiento por burbuja segun dias de vencimiento (de menor a mayor) */
+void ordenarPorDiasBurbuja(int numeros[], int dias[], int cantidad) {
+    int i, j;
+
+    if (cantidad < 2) {
+        printf("\n[AVISO] Hacen falta al menos 2 entradas para ordenar.\n");
+        return;
+    }
+
+    for (i = 0; i < cantidad - 1; i++) {
+        for (j = 0; j < cantidad - 1 - i; j++) {
+            if (dias[j] > dias[j + 1]) {
+                intercambiar(&dias[j], &dias[j + 1]);
+                intercambiar(&numeros[j], &numeros[j + 1]);
+            }
+        }
+    }
+
+    printf("[OK] Entradas ordenadas por dias de vencimiento (burbuja).\n");
+}
+
 int main(void) {
     int numeros[MAX];
     int dias[MAX];
@@ -128,11 +149,12 @@ int main(void) {
     int opcion;
 
     do {
-        printf("\n=== GESTION DE ENTRADAS (PASO 1) ===\n");
+        printf("\n=== GESTION DE ENTRADAS (PASO 2) ===\n");
         printf("1. Agregar entrada\n");
         printf("2. Actualizar entrada\n");
         printf("3. Eliminar entrada\n");
         printf("4. Mostrar entradas\n");
+        printf("5. Ordenar por dias de vencimiento (Burbuja)\n");
         printf("0. Salir\n");
         printf("Opcion: ");
         scanf("%d", &opcion);
@@ -149,6 +171,9 @@ int main(void) {
                 break;
             case 4:
                 mostrarEntradas(numeros, dias, cantidad);
+                break;
+            case 5:
+                ordenarPorDiasBurbuja(numeros, dias, cantidad);
                 break;
             case 0:
                 printf("\nSaliendo...\n");
